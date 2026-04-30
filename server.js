@@ -488,6 +488,13 @@ app.get('/api/debug/products', (req, res) => {
   } catch(e) { res.status(500).json({error: e.message}); }
 });
 
+app.get('/api/debug/orders', (req, res) => {
+  try {
+    const orders = db.prepare('SELECT * FROM orders').all();
+    res.json(orders);
+  } catch(e) { res.status(500).json({error: e.message}); }
+});
+
 // Start Server
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`AgriChain server running on port ${PORT}`);
