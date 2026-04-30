@@ -473,6 +473,21 @@ app.get('/api/mobile-qr', async (req, res) => {
   }
 });
 
+// --- Debug / Viva Admin Routes ---
+app.get('/api/debug/users', (req, res) => {
+  try {
+    const users = db.prepare('SELECT id, name, email, role, location, mobile, address, aadhaar_number, is_aadhaar_verified, created_at FROM users').all();
+    res.json(users);
+  } catch(e) { res.status(500).json({error: e.message}); }
+});
+
+app.get('/api/debug/products', (req, res) => {
+  try {
+    const products = db.prepare('SELECT * FROM products').all();
+    res.json(products);
+  } catch(e) { res.status(500).json({error: e.message}); }
+});
+
 // Start Server
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`AgriChain server running on port ${PORT}`);
