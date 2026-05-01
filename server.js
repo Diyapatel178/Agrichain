@@ -145,13 +145,13 @@ app.get('/api/products', (req, res) => {
     let products = [];
     if (role === 'customer') {
       products = db.prepare(`
-        SELECT p.*, u_farmer.name as farmer_name, u_retailer.name as retailer_name, u_retailer.id as retailer_id,
+        SELECT p.*, u_farmer.name as farmer_name, u_retailer.name as retailer_name, u_retailer.id as retailer_id, u_retailer.location as retailer_location,
                COALESCE(o.retail_price, p.farm_price) as display_price, o.quantity as available_qty, o.id as inventory_id, u_farmer.is_aadhaar_verified
         FROM products p
         JOIN users u_farmer ON p.farmer_id = u_farmer.id
         JOIN orders o ON p.id = o.product_id
         JOIN users u_retailer ON o.buyer_id = u_retailer.id
-        WHERE o.type = 'farmer_to_retailer' AND o.status = 'confirmed' AND o.payment_status = 'paid' AND o.quantity > 0 AND p.status = 'available'
+        WHERE o.type = 'farmer_to_retailer' AND o.status IN ('confirmed', 'delivered') AND o.payment_status = 'paid' AND o.quantity > 0 AND p.status = 'available'
         ORDER BY p.created_at DESC
       `).all();
     } else {
